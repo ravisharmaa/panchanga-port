@@ -229,3 +229,108 @@ function threeRelationPort($a, $b, $c)
         return 0;
     }
 }
+
+// port of next_date
+
+/**
+ * @param $year
+ * @param $month
+ * @param $day
+ *
+ * @return array
+ */
+function nextDatePort($year, $month, $day)
+{
+    ++$day;
+
+    if ((2 == $month) && (29 < $day)) {
+        $day = 1;
+        ++$month;
+    } elseif ((4 == $month) || (6 == $month) || (9 == $month) || (11 == $month) && (30 < $day)) {
+        $day = 1;
+        ++$month;
+    } else {
+        if (31 < $day) {
+            $day = 1;
+            ++$month;
+        }
+    }
+
+    if (12 < $month) {
+        $month = 1;
+        ++$year;
+    }
+
+    // need to complete this after implementing the modern_date_to_julian_day port
+
+    if (modernDateToJulianDay($year, $month, $day) == modernDateToJulianDay($year, $month + 1, 1)) {
+        return [$year, $month + 1, 1];
+    } else {
+        return [$year, $month, $day];
+    }
+}
+
+//port of ModernDate to Julian Day
+
+function modernDateToJulianDay($year, $month, $day)
+{
+    if ($month < 3) {
+        --$year;
+
+        $month += 12;
+    }
+
+    $julianDay = intPort(365.25 * $year) + intPort(30.59 * ($month - 2)) + $day + 1721086.5;
+
+    if ($year < 0) {
+        --$julianDay;
+
+        if ((0 === $year % 4) && (3 <= $month)) {
+            ++$julianDay;
+        }
+    }
+    if (2299160 < $julianDay) {
+        $julianDay = $julianDay + intPort($year / 400) - intPort($year / 100) + 2;
+    }
+
+    return $julianDay;
+}
+
+// port of Julian in England
+/**
+ * @param $julianDay
+ *
+ * @return int
+ */
+function julianInEngland($julianDay)
+{
+    if ((2299160 < $julianDay) && ($julianDay <= 2361221)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+//port of julianDayToJulianDate
+
+function julianDayToJulianDate($julianDay) {
+    $j = 0;
+    $k = 0;
+    $l = 0;
+    $n = 0;
+    $i = 0;
+    $J = 0;
+    $I = 0;
+
+    $year = 0;
+    $month = 0;
+    $day = 0;
+
+    $j = (int) $julianDay + 1402;
+    $k = (int) ($j - 1)/ 1461;
+    $l = $j - 1461 * $k;
+    $n = (int) ($l - 1)/365 - (int) ($l / 1461);
+
+
+
+}
